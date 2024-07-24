@@ -12,11 +12,24 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  int _currentIndex = 0;
+  int _currentQuestionIndex = 0;
+  int _score = 0;
+
+  void _questionAnswered(bool isCorrect) {
+    setState(() {
+      _score += isCorrect ? 1 : 0;
+      if (_currentQuestionIndex < widget.questions.length - 1) {
+        _currentQuestionIndex++;
+      } else {
+        //   TODO move to game over screen
+        print('final score $_score');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = widget.questions[_currentIndex];
+    final currentQuestion = widget.questions[_currentQuestionIndex];
 
     return Scaffold(
       appBar: AppBar(
@@ -33,6 +46,10 @@ class _QuizScreenState extends State<QuizScreen> {
                   'correct answer index ${currentQuestion.correctAnswerIndex}');
               return ListTile(
                 title: Text(currentQuestion.options[index]),
+                onTap: () {
+                  _questionAnswered(
+                      index == currentQuestion.correctAnswerIndex);
+                },
               );
             },
           ))
